@@ -12,25 +12,26 @@ const server = net.createServer((socket: net.Socket) => {
         // Imprimir el buffer de datos
         console.log('Datos recibidos (Buffer):', data);
 
-        // Expresión regular actualizada para incluir latitud y longitud como enteros
-        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/; 
+        // Expresión regular para extraer la información relevante
+        const dataPattern = /lat:([+-]?\d*\.\d+)\s*lon:([+-]?\d*\.\d+)\s*Spd:(\d+)\s*T:(.*)\s*bat:(\d+)%\s*ID:(\d+)/;
         const match = receivedData.match(dataPattern);
 
-        // Imprimir el patrón de datos
-        console.log('Patrón de datos:', dataPattern);
-
         if (match) {
-            const imei = match[1];          // IMEI
-            const status = match[3];        // Estado
-            const latitude = match[4];      // Latitud (entero)
-            const longitude = match[5];     // Longitud (entero)
+            const latitude = match[1];      // Latitud
+            const longitude = match[2];     // Longitud
+            const speed = match[3];         // Velocidad
+            const timestamp = match[4];     // Fecha y hora
+            const battery = match[5];       // Batería
+            const imei = match[6];          // IMEI
 
             // Imprimir los detalles extraídos
             console.log('Detalles extraídos:');
-            console.log(`  IMEI: ${imei}`);
-            console.log(`  Estado: ${status}`);
             console.log(`  Latitud: ${latitude}`);
             console.log(`  Longitud: ${longitude}`);
+            console.log(`  Velocidad: ${speed}`);
+            console.log(`  Fecha y hora: ${timestamp}`);
+            console.log(`  Batería: ${battery}%`);
+            console.log(`  IMEI: ${imei}`);
 
             // Aquí puedes agregar más lógica para procesar los datos como quieras
 
