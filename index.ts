@@ -13,7 +13,8 @@ const server = net.createServer((socket: net.Socket) => {
         console.log('Datos recibidos (Buffer):', data);
 
         // Verificar si los datos tienen el formato esperado
-        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),([\d.-]+),([\d.-]+)\]$/;
+        // Modificación aquí para capturar correctamente latitud y longitud
+        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/; 
         const match = receivedData.match(dataPattern);
 
         // Imprimir el patrón de datos
