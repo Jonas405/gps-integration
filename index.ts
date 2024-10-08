@@ -8,38 +8,30 @@ const server = net.createServer((socket: net.Socket) => {
     socket.on('data', (data: Buffer) => {
         const receivedData = data.toString().trim(); // Convierte los datos a string y elimina espacios en blanco
         console.log('Datos recibidos (String):', receivedData);
-
-        // Imprimir el buffer de datos
         console.log('Datos recibidos (Buffer):', data);
 
-        // Expresión regular para extraer la información relevante
-        const dataPattern = /lat:([+-]?\d*\.\d+)\s*lon:([+-]?\d*\.\d+)\s*Spd:(\d+)\s*T:(.*)\s*bat:(\d+)%\s*ID:(\d+)/;
+        // Expresión regular actualizada
+        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/; 
         const match = receivedData.match(dataPattern);
 
-        if (match) {
-            const latitude = match[1];      // Latitud
-            const longitude = match[2];     // Longitud
-            const speed = match[3];         // Velocidad
-            const timestamp = match[4];     // Fecha y hora
-            const battery = match[5];       // Batería
-            const imei = match[6];          // IMEI
+        console.log('Patrón de datos:', dataPattern);
 
-            // Imprimir los detalles extraídos
+        if (match) {
+            const imei = match[1];          // IMEI
+            const status = match[3];        // Estado
+            const latitude = match[4];      // Latitud (entero)
+            const longitude = match[5];     // Longitud (entero)
+
             console.log('Detalles extraídos:');
+            console.log(`  IMEI: ${imei}`);
+            console.log(`  Estado: ${status}`);
             console.log(`  Latitud: ${latitude}`);
             console.log(`  Longitud: ${longitude}`);
-            console.log(`  Velocidad: ${speed}`);
-            console.log(`  Fecha y hora: ${timestamp}`);
-            console.log(`  Batería: ${battery}%`);
-            console.log(`  IMEI: ${imei}`);
-
-            // Aquí puedes agregar más lógica para procesar los datos como quieras
 
             // Enviar una respuesta al GPS si es necesario
             socket.write('Datos procesados correctamente\n'); // Respuesta opcional
         } else {
             console.log('Formato de datos no reconocido');
-            // Enviar una respuesta de error al GPS si es necesario
             socket.write('Formato de datos no reconocido\n'); // Respuesta opcional
         }
     });
