@@ -16,7 +16,7 @@ const server = net.createServer((socket: net.Socket) => {
         const lkPattern = /^\[SG\*(\d+)\*(\d+)\*LK,(\d+),(\d+)\]$/;
 
         // Patrón para mensajes UD (geolocalización) ajustado
-        const udPattern = /^\[SG\*(\d+)\*\w{4}\*UD,(\d{6}),(\d{6}),([AV]),([\d.-]+),(N|S),([\d.-]+),(E|W),([\d.]+),(\d+),(\d+)(?:,(.+))*\]$/;
+        const udPattern = /^\[SG\*(\d+)\*\w{4}\*UD,(\d{6}),(\d{6}),([AV]),([\d.]+),(N|S),([\d.]+),(E|W),([\d.]+),(\d+),(\d+)(?:,(.+))*\]$/;
 
         // Intentar hacer match con cada patrón
         const lkMatch = receivedData.match(lkPattern);
@@ -41,18 +41,24 @@ const server = net.createServer((socket: net.Socket) => {
             const date = udMatch[2];          // Fecha en formato DDMMYY
             const time = udMatch[3];          // Hora en formato HHMMSS
             const positionStatus = udMatch[4]; // Estado de la posición (A o V)
-            const latitude = `${udMatch[5]} ${udMatch[6]}`;  // Latitud con dirección (N o S)
-            const longitude = `${udMatch[7]} ${udMatch[8]}`; // Longitud con dirección (E o W)
+            const latitude = parseFloat(udMatch[5]);  // Convertir a número
+            const latDirection = udMatch[6];   // Dirección de la latitud (N o S)
+            const longitude = parseFloat(udMatch[7]); // Convertir a número
+            const longDirection = udMatch[8];  // Dirección de la longitud (E o W)
             const speed = udMatch[9];         // Velocidad en km/h
             const direction = udMatch[10];     // Dirección (grados)
+
+            // Ajustar latitud y longitud según la dirección
+            const adjustedLatitude = latDirection === 'S' ? -latitude : latitude;
+            const adjustedLongitude = longDirection === 'W' ? -longitude : longitude;
 
             console.log('Mensaje UD recibido:');
             console.log(`  IMEI: ${imei}`);
             console.log(`  Fecha (UTC): ${date}`);
             console.log(`  Hora (UTC): ${time}`);
             console.log(`  Estado posición: ${positionStatus === 'A' ? 'Disponible' : 'Inválida'}`);
-            console.log(`  Latitud: ${latitude}`);
-            console.log(`  Longitud: ${longitude}`);
+            console.log(`  Latitud: ${adjustedLatitude}`);
+            console.log(`  Longitud: ${adjustedLongitude}`);
             console.log(`  Velocidad: ${speed} km/h`);
             console.log(`  Dirección: ${direction} grados`);
 
