@@ -12,8 +12,8 @@ const server = net.createServer((socket: net.Socket) => {
         // Imprimir el buffer de datos
         console.log('Datos recibidos (Buffer):', data);
 
-        // Expresión regular actualizada para incluir latitud/longitud decimales
-        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),([+-]?\d*\.?\d+),([+-]?\d*\.?\d+)\]$/; 
+        // Expresión regular actualizada para incluir latitud y longitud como enteros
+        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/; 
         const match = receivedData.match(dataPattern);
 
         // Imprimir el patrón de datos
@@ -22,8 +22,8 @@ const server = net.createServer((socket: net.Socket) => {
         if (match) {
             const imei = match[1];          // IMEI
             const status = match[3];        // Estado
-            const latitude = match[4];      // Latitud (decimal)
-            const longitude = match[5];     // Longitud (decimal)
+            const latitude = match[4];      // Latitud (entero)
+            const longitude = match[5];     // Longitud (entero)
 
             // Imprimir los detalles extraídos
             console.log('Detalles extraídos:');
