@@ -1,14 +1,14 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser'; // Importar body-parser
 
 const app = express();
 const PORT = 4000;
 
-// Middleware para analizar el cuerpo de la solicitud
-app.use(bodyParser.text({ type: '*/*' }));
+// Usar body-parser para JSON
+app.use(bodyParser.json());
 
-app.post('/', (req: { body: any; }, res: { send: (arg0: string) => void; }) => {
-    console.log('Datos recibidos:', req.body); // Aquí puedes procesar los datos
+app.post('/', (req: Request, res: Response) => {
+    console.log('Datos recibidos:', req.body); // Aquí puedes procesar los datos recibidos
     res.send('Datos recibidos'); // Respuesta al GPS
 });
 
