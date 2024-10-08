@@ -26,7 +26,7 @@ const server = net.createServer((socket: net.Socket) => {
             const longitude = match[5];     // Longitud (decimal)
 
             // Imprimir los detalles extraídos
-            console.log(`Detalles extraídos:`);
+            console.log('Detalles extraídos:');
             console.log(`  IMEI: ${imei}`);
             console.log(`  Estado: ${status}`);
             console.log(`  Latitud: ${latitude}`);
