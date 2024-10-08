@@ -6,8 +6,8 @@ const server = net.createServer((socket: net.Socket) => {
 
     // Manejar datos recibidos
     socket.on('data', (data: Buffer) => {
-        console.log("data cruda buffer")
-        console.log(data)
+        console.log("data cruda buffer");
+        console.log(data);
         const receivedData = data.toString().trim(); // Convierte los datos a string y elimina espacios en blanco
         console.log('Datos recibidos (String):', receivedData);
         console.log('Datos recibidos (Buffer):', data);
@@ -15,8 +15,8 @@ const server = net.createServer((socket: net.Socket) => {
         // Patrón para mensajes LK
         const lkPattern = /^\[SG\*(\d+)\*(\d+)\*LK,(\d+),(\d+)\]$/;
 
-        // Patrón para mensajes UD (geolocalización)
-        const udPattern = /^\[SG\*(\d+)\*(\d+)\*UD,(\d{6}),(\d{6}),([AV]),(\d+\.\d+),(N|S),(\d+\.\d+),(E|W),(\d+\.\d+),(\d{3}),(\d+)\]$/;
+        // Patrón para mensajes UD (geolocalización) ajustado
+        const udPattern = /^\[SG\*(\d+)\*\w{4}\*UD,(\d{6}),(\d{6}),([AV]),([\d.-]+),(N|S),([\d.-]+),(E|W),([\d.]+),(\d+),(\d+)(?:,(.+))*\]$/;
 
         // Intentar hacer match con cada patrón
         const lkMatch = receivedData.match(lkPattern);
@@ -38,13 +38,13 @@ const server = net.createServer((socket: net.Socket) => {
         } else if (udMatch) {
             // Si el mensaje es tipo UD (geolocalización)
             const imei = udMatch[1];          // IMEI
-            const date = udMatch[3];          // Fecha en formato DDMMYY
-            const time = udMatch[4];          // Hora en formato HHMMSS
-            const positionStatus = udMatch[5]; // Estado de la posición (A o V)
-            const latitude = `${udMatch[6]} ${udMatch[7]}`;  // Latitud con dirección (N o S)
-            const longitude = `${udMatch[8]} ${udMatch[9]}`; // Longitud con dirección (E o W)
-            const speed = udMatch[10];        // Velocidad en km/h
-            const direction = udMatch[11];    // Dirección (grados)
+            const date = udMatch[2];          // Fecha en formato DDMMYY
+            const time = udMatch[3];          // Hora en formato HHMMSS
+            const positionStatus = udMatch[4]; // Estado de la posición (A o V)
+            const latitude = `${udMatch[5]} ${udMatch[6]}`;  // Latitud con dirección (N o S)
+            const longitude = `${udMatch[7]} ${udMatch[8]}`; // Longitud con dirección (E o W)
+            const speed = udMatch[9];         // Velocidad en km/h
+            const direction = udMatch[10];     // Dirección (grados)
 
             console.log('Mensaje UD recibido:');
             console.log(`  IMEI: ${imei}`);
