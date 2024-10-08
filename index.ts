@@ -1,9 +1,17 @@
-import { App } from "./app"
+const express = require('express');
+const bodyParser = require('body-parser');
 
-function main () {
+const app = express();
+const PORT = 4000;
 
-  const api = new App();
+// Middleware para analizar el cuerpo de la solicitud
+app.use(bodyParser.text({ type: '*/*' }));
 
-}
+app.post('/', (req: { body: any; }, res: { send: (arg0: string) => void; }) => {
+    console.log('Datos recibidos:', req.body); // Aquí puedes procesar los datos
+    res.send('Datos recibidos'); // Respuesta al GPS
+});
 
-main();
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
