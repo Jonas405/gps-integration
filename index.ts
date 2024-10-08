@@ -1,23 +1,37 @@
-import * as net from 'net';  // Asegúrate de importar correctamente el módulo 'net'
+import * as net from 'net';
 
 // Crear un servidor TCP
-const server = net.createServer((socket: net.Socket) => {  // Especificamos el tipo del parámetro 'socket'
+const server = net.createServer((socket: net.Socket) => {
     console.log('Conexión establecida con:', socket.remoteAddress);
 
     // Manejar datos recibidos
     socket.on('data', (data: Buffer) => {
         const receivedData = data.toString().trim(); // Convierte los datos a string y elimina espacios en blanco
-        console.log('Datos recibidos:', receivedData);
+        console.log('Datos recibidos (String):', receivedData);
+
+        // Imprimir el buffer de datos
+        console.log('Datos recibidos (Buffer):', data);
 
         // Verificar si los datos tienen el formato esperado
-        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/;
+        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),([\d.-]+),([\d.-]+)\]$/;
         const match = receivedData.match(dataPattern);
 
-        if (match) {
-            const imei = match[1];
-            const status = match[3];
+        // Imprimir el patrón de datos
+        console.log('Patrón de datos:', dataPattern);
 
-            console.log(`IMEI: ${imei}, Estado: ${status}`);
+        if (match) {
+            const imei = match[1];          // IMEI
+            const status = match[3];        // Estado
+            const latitude = match[4];      // Latitud
+            const longitude = match[5];     // Longitud
+
+            // Imprimir los detalles extraídos
+            console.log(`Detalles extraídos:`);
+            console.log(`  IMEI: ${imei}`);
+            console.log(`  Estado: ${status}`);
+            console.log(`  Latitud: ${latitude}`);
+            console.log(`  Longitud: ${longitude}`);
+
             // Aquí puedes agregar más lógica para procesar los datos como quieras
 
             // Enviar una respuesta al GPS si es necesario
