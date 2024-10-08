@@ -1,25 +1,17 @@
-import Express from "express";
-import morgan from "morgan";
-import router from "./src/routes";
+const express = require('express');
+const bodyParser = require('body-parser');
 
-export class App {
-    app: Express.Application;
+const app = express();
+const PORT = 4000;
 
-    constructor() {
-        this.app = Express();
-        this.middlewares();
-        this.listen(4000);
-    }
+// Middleware para analizar el cuerpo de la solicitud
+app.use(bodyParser.text({ type: '*/*' }));
 
-    middlewares() {
-        this.app.use(Express.json());
-        this.app.use(morgan("dev"));
-        this.app.use(router)
-    }
+app.post('/', (req: { body: any; }, res: { send: (arg0: string) => void; }) => {
+    console.log('Datos recibidos:', req.body); // Aquí puedes procesar los datos
+    res.send('Datos recibidos'); // Respuesta al GPS
+});
 
-    listen(port: number | string) {
-        this.app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
-        });
-    }
-}
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
