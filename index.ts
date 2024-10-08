@@ -6,18 +6,26 @@ const server = net.createServer((socket: net.Socket) => {  // Especificamos el t
 
     // Manejar datos recibidos
     socket.on('data', (data: Buffer) => {
-        const receivedData = data.toString();
+        const receivedData = data.toString().trim(); // Convierte los datos a string y elimina espacios en blanco
         console.log('Datos recibidos:', receivedData);
 
-        // Ejemplo simple de parseo
-        const parts = receivedData.split(',');
-        if (parts.length >= 9) {
-            const imei = parts[0].split(':')[1];
-            const lat = parts[6];
-            const lon = parts[8];
-            console.log(`IMEI: ${imei}, Latitud: ${lat}, Longitud: ${lon}`);
+        // Verificar si los datos tienen el formato esperado
+        const dataPattern = /^\[SG\*(\d+)\*(\d+)\*(\w+),(\d+),(\d+)\]$/;
+        const match = receivedData.match(dataPattern);
+
+        if (match) {
+            const imei = match[1];
+            const status = match[3];
+
+            console.log(`IMEI: ${imei}, Estado: ${status}`);
+            // Aquí puedes agregar más lógica para procesar los datos como quieras
+
+            // Enviar una respuesta al GPS si es necesario
+            socket.write('Datos procesados correctamente\n'); // Respuesta opcional
         } else {
             console.log('Formato de datos no reconocido');
+            // Enviar una respuesta de error al GPS si es necesario
+            socket.write('Formato de datos no reconocido\n'); // Respuesta opcional
         }
     });
 
