@@ -35,6 +35,18 @@ const server = net.createServer((socket: net.Socket) => {
 
             // Enviar una respuesta opcional
             socket.write('Mensaje LK procesado\n');
+
+            // Activar GPS en TK905 si se recibe un mensaje LK
+            if (imei.startsWith('905')) { // Asumiendo que los IMEI del TK905 comienzan con 905
+                const activateGPSCommand = 'AT+GPS=1\r\n'; // Comando para activar GPS
+                socket.write(activateGPSCommand, (err) => {
+                    if (err) {
+                        console.error('Error al enviar el comando de activación GPS:', err);
+                    } else {
+                        console.log('Comando de activación GPS enviado al TK905.');
+                    }
+                });
+            }
         } else if (udMatch) {
             // Si el mensaje es tipo UD (geolocalización)
             const imei = udMatch[1];          // IMEI
